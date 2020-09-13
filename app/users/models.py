@@ -7,6 +7,7 @@ from app.users.utils import generate_token
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(128), unique=True, index=True, nullable=False)
+    password = db.Column(db.String(32), nullable=False)
     first_name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now, index=True)
@@ -17,9 +18,6 @@ class User(db.Model):
         cascade='all, delete-orphan'
     )
 
-    __mapper_args__ = {
-        'order_by': created_at
-    }
     __tablename__ = 'users'
 
     def __str__(self):
@@ -41,9 +39,6 @@ class Token(db.Model):
     key = db.Column(db.String(256), default=generate_token, nullable=False, unique=True)
     created_at = db.Column(db.DateTime, default=datetime.now, index=True)
 
-    __mapper_args__ = {
-        'order_by': created_at
-    }
     __tablename__ = 'user_tokens'
 
     def __str__(self):

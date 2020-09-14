@@ -37,8 +37,8 @@ class UserSchema(Schema):
 
     @post_load
     def create_user(self, data, **kwargs):
-        data['password'] = hash_md5(data['password'])
         user = User(**data)
+        user.set_password(data['password'])
         token = Token()
         user.tokens.append(token)
         db.session.add(user)

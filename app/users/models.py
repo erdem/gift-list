@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from app.database import db
-from app.users.utils import generate_token
+from app.users.utils import generate_token, hash_md5
 
 
 class User(db.Model):
@@ -18,6 +18,12 @@ class User(db.Model):
         cascade='all, delete-orphan'
     )
 
+    lists = db.relationship(
+        'List',
+        back_populates='owner',
+        cascade='all, delete-orphan'
+    )
+
     __tablename__ = 'users'
 
     def __str__(self):
@@ -30,9 +36,12 @@ class User(db.Model):
             )
         )
 
+    def set_password(self, password):
+        self.password = hash_md5(password)
+
 
 class Token(db.Model):
-    user = db.relationship('User')
+    user = db.relationship('users.User')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     id = db.Column(db.Integer, primary_key=True)

@@ -24,6 +24,12 @@ class User(db.Model):
         cascade='all, delete-orphan'
     )
 
+    purchased_list_items = db.relationship(
+        'PurchasedListItem',
+        back_populates='purchased_by',
+        cascade='all, delete-orphan'
+    )
+
     __tablename__ = 'users'
 
     def __str__(self):
@@ -41,7 +47,7 @@ class User(db.Model):
 
 
 class Token(db.Model):
-    user = db.relationship('users.User')
+    user = db.relationship('User')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     id = db.Column(db.Integer, primary_key=True)

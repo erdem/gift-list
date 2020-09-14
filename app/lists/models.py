@@ -4,20 +4,21 @@ from app.database import db
 
 
 class List(db.Model):
-    owner = db.relationship('users.User')
+    # many-to-one User db model relation
+    owner = db.relationship('User', back_populates="lists", uselist=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now, index=True)
 
-    items = db.relationship(
+    list_items = db.relationship(
         'ListItem',
         back_populates='list',
         cascade='all, delete-orphan'
     )
 
-    purchased_items = db.relationship(
+    purchased_list_items = db.relationship(
         'PurchasedListItem',
         back_populates='list',
         cascade='all, delete-orphan'
@@ -37,15 +38,21 @@ class List(db.Model):
 
 
 class ListItem(db.Model):
-    list = db.relationship('lists.List')
+    list = db.relationship('List', back_populates="list_items")
     list_id = db.Column(db.Integer, db.ForeignKey('lists.id'))
 
-    product = db.relationship('Product')
+    product = db.relationship('Product', back_populates="list_items", uselist=False)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
 
     id = db.Column(db.Integer, primary_key=True)
-    quantity = db.Column(db.Integer, nullable=False, default=0)
+    quantity = db.Column(db.Integer, nullable=False, default=1)
     created_at = db.Column(db.DateTime, default=datetime.now, index=True)
+
+    purchased_item = db.relationship(
+        'PurchasedListItem',
+        back_populates='list_item',
+        cascade='all, delete-orphan'
+    )
 
     __tablename__ = 'list_items'
 
@@ -60,14 +67,17 @@ class ListItem(db.Model):
 
 
 class PurchasedListItem(db.Model):
-    purchased_by = db.relationship('users.User')
+    # one-to-one User db model relation
+    purchased_by = db.relationship('User', back_populates="purchased_list_items")
     purchased_by_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    list = db.relationship('List')
+    # many-to-one List db model relation
+    list = db.relationship('List', back_populates="purchased_list_items", uselist=False)
     list_id = db.Column(db.Integer, db.ForeignKey('lists.id'))
 
-    list_item = db.relationship('List')
-    list_item_id = db.Column(db.Integer, db.ForeignKey('lists.id'))
+    # one-to-one ListItem model relation
+    list_item = db.relationship('ListItem', back_populates="purchased_item")
+    list_item_id = db.Column(db.Integer, db.ForeignKey('list_items.id'))
 
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.now, index=True)

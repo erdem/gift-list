@@ -1,0 +1,31 @@
+from http import HTTPStatus
+
+from flask import Blueprint, jsonify, request
+
+from app.products.models import Product
+from app.products.schemas import ProductSchema
+
+products_api = Blueprint('products_api', __name__)
+
+
+@products_api.route('/', methods=["POST"])
+def create_contact():
+    data = request.get_json()
+    schema = ProductSchema()
+
+    validated_data, errors = schema.load(data)
+
+    if errors:
+        return jsonify(errors), HTTPStatus.BAD_REQUEST
+    return jsonify(schema.dump(schema.instance)), HTTPStatus.CREATED
+
+
+@products_api.route('/', methods=["GET"])
+@products_api.route('/<int:product_id>/', methods=["GET"])
+def retrieve_products(product_id=None):
+    if product_id:
+        product = Product.query.filter_by(id=product_id).first_or_404()
+        return jsonify(ProductSchema().dump(product)), HTTPStatus.OK
+
+    products = Product.query.all()
+    return jsonify(ProductSchema(many=True).dump(products)), HTTPStatus.OK

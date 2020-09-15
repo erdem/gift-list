@@ -13,11 +13,13 @@ def create_contact():
     data = request.get_json()
     schema = ProductSchema()
 
-    validated_data, errors = schema.load(data)
+    errors = schema.validate(data)
 
     if errors:
         return jsonify(errors), HTTPStatus.BAD_REQUEST
-    return jsonify(schema.dump(schema.instance)), HTTPStatus.CREATED
+    load_data = schema.load(data)
+    product_obj = schema.create(load_data)
+    return jsonify(schema.dump(product_obj)), HTTPStatus.CREATED
 
 
 @products_api.route('/', methods=["GET"])

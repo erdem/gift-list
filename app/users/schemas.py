@@ -25,18 +25,8 @@ class UserSchema(Schema):
         except IndexError:
             return None
 
-    @property
-    def instance(self):
-        """
-        Returns created db entity object after `Schema` loaded.
-        """
-        try:
-            return self._instance
-        except AttributeError:
-            raise AttributeError(f'"instance" attribute not accessible, you must loaded the schema to access.')
-
-    @post_load
-    def create_user(self, data, **kwargs):
+    @classmethod
+    def create(cls, data, **kwargs):
         user = User(**data)
         user.set_password(data['password'])
         token = Token()
@@ -44,7 +34,7 @@ class UserSchema(Schema):
         db.session.add(user)
         db.session.add(token)
         db.session.commit()
-        self._instance = user
+        return user
 
 
 class AuthenticateUserSchema(Schema):

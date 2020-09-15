@@ -9,16 +9,18 @@ users_api = Blueprint('users_api', __name__)
 
 
 @users_api.route('/', methods=["POST"])
-def create_user():
+def register():
     data = request.get_json()
     schema = UserSchema(many=False)
 
-    validation_errors = schema.validate(data)
+    errors = schema.validate(data)
 
-    if validation_errors:
-        return jsonify(validation_errors), HTTPStatus.BAD_REQUEST
-    schema.load(data)
-    return jsonify(schema.dump(schema.instance)), HTTPStatus.CREATED
+    if errors:
+        return jsonify(errors), HTTPStatus.BAD_REQUEST
+
+    load_data = schema.load(data)
+    user_obj = schema.create(load_data)
+    return jsonify(schema.dump(user_obj)), HTTPStatus.CREATED
 
 
 @users_api.route('/', methods=["GET"])

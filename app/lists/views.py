@@ -12,8 +12,8 @@ from app.products.models import Product
 lists_api = Blueprint('lists_api', __name__)
 
 
-@auth.login
 @lists_api.route('/', methods=['POST'])
+@auth.login
 def create_list(auth_user):
     data = request.get_json()
     schema = ListSchema()
@@ -50,16 +50,11 @@ def create_list_items(auth_user, list_id=None):
     product_id = data.pop('product', None)
     product_obj = Product.query.filter_by(id=product_id).first()
 
-    validation_errors = {}
-    if not product_obj:
-        validation_errors['product'] = 'Invalid "product" identifier value'
-
     schema = ListItemSchema(context={
-        'product': product_obj,
+        'product_id': product_id,
         'list': list_obj
     })
     errors = schema.validate(data)
-    errors.update(validation_errors)
     if errors:
         return jsonify(errors), HTTPStatus.BAD_REQUEST
 

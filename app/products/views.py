@@ -12,7 +12,7 @@ products_api = Blueprint('products_api', __name__)
 
 @products_api.route('/', methods=['POST'])
 @auth.login
-def create_contact():
+def create_products():
     data = request.get_json()
     schema = ProductSchema()
 

@@ -7,6 +7,7 @@ from app.core import auth
 from app.users.models import User, Token
 from app.users.schemas import UserSchema, AuthenticateUserSchema
 
+
 users_api = Blueprint('users_api', __name__)
 
 
@@ -23,7 +24,9 @@ def register():
     load_data = schema.load(data)
     user_obj = schema.create(load_data)
     token = user_obj.tokens.order_by(desc(Token.created_at)).first()
-    return jsonify(AuthenticateUserSchema().dump(token)), HTTPStatus.CREATED
+    user_data = UserSchema().dump(user_obj)
+    user_data['token'] = token.key
+    return jsonify(user_data), HTTPStatus.CREATED
 
 
 @users_api.route('/', methods=['GET'])

@@ -68,6 +68,9 @@ class ListItem(db.Model):
             )
         )
 
+    def is_purchased(self):
+        return bool(self.purchased_item)
+
 
 class PurchasedListItem(db.Model):
     # one-to-one User db model relation

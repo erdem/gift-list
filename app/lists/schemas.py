@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields, validates_schema, ValidationError
 from app.database import db
 from app.lists.models import List, ListItem, PurchasedListItem
+from app.products.models import Product
 from app.products.schemas import ProductSchema
 from app.users.schemas import UserSchema
 
@@ -32,7 +33,7 @@ class ListItemSchema(Schema):
     list = fields.Nested(ListSchema(exclude=('list_items',)), many=False, dump_only=True)
     product = fields.Nested(ProductSchema, many=False)
     quantity = fields.Integer(required=True, default=1)
-    is_purchased = fields.Method('get_is_purchased')
+    is_purchased = fields.String(dump_only=True)
     purchased_item = fields.Nested(
         lambda: PurchasedListItemSchema(
             only=('id', 'created_at')
@@ -46,14 +47,12 @@ class ListItemSchema(Schema):
     class Meta:
         ordered = True
 
-    def get_is_purchased(self, list_item_obj):
-        return bool(list_item_obj.purchased_item)
-
     @validates_schema
     def check_product_stock(self, data, **kwargs):
-        product_obj = self.context.get('product')
+        product_id = self.context.get('product_id')
+        product_obj = Product.query.filter_by(id=product_id).first()
         if not product_obj:
-            raise ValidationError('Invalid product.', field_name='product')
+            raise ValidationError('Invalid "product" identifier value.', field_name='product')
 
         list_item_quantity = data.get('quantity')
         if not product_obj.in_stock_quantity >= list_item_quantity:

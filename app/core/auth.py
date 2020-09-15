@@ -13,7 +13,7 @@ def login(view):
             abort(HTTPStatus.UNAUTHORIZED)
         header_auth_data = request.headers.get('Authorization', '')
         token_key = header_auth_data.replace('Bearer ', '')
-        token_obj = Token.query.filter_by(key=token_key).one()
+        token_obj = Token.query.filter_by(key=token_key).first()
         if not token_obj:
             abort(HTTPStatus.UNAUTHORIZED)
         return view(auth_user=token_obj.user, *args, **kwargs)

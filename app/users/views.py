@@ -10,7 +10,7 @@ from app.users.schemas import UserSchema, AuthenticateUserSchema
 users_api = Blueprint('users_api', __name__)
 
 
-@users_api.route('/', methods=["POST"])
+@users_api.route('/', methods=['POST'])
 def register():
     data = request.get_json()
     schema = UserSchema(many=False)
@@ -26,8 +26,8 @@ def register():
     return jsonify(AuthenticateUserSchema().dump(token)), HTTPStatus.CREATED
 
 
-@users_api.route('/', methods=["GET"])
-@users_api.route('/<int:user_id>/', methods=["GET"])
+@users_api.route('/', methods=['GET'])
+@users_api.route('/<int:user_id>/', methods=['GET'])
 @auth.login
 def retrieve_users(auth_user, user_id=None):
     if user_id:
@@ -38,7 +38,7 @@ def retrieve_users(auth_user, user_id=None):
     return jsonify(UserSchema(many=True).dump(users)), HTTPStatus.OK
 
 
-@users_api.route('/authenticate/', methods=["POST"])
+@users_api.route('/authenticate/', methods=['POST'])
 def authenticate_user():
     data = request.get_json()
     auth_schema = AuthenticateUserSchema()

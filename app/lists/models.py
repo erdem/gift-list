@@ -15,12 +15,14 @@ class List(db.Model):
     list_items = db.relationship(
         'ListItem',
         back_populates='list',
+        lazy='dynamic',
         cascade='all, delete-orphan'
     )
 
     purchased_list_items = db.relationship(
         'PurchasedListItem',
         back_populates='list',
+        lazy='dynamic',
         cascade='all, delete-orphan'
     )
 
@@ -51,7 +53,8 @@ class ListItem(db.Model):
     purchased_item = db.relationship(
         'PurchasedListItem',
         back_populates='list_item',
-        cascade='all, delete-orphan'
+        cascade='all, delete-orphan',
+        uselist=False
     )
 
     __tablename__ = 'list_items'

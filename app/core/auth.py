@@ -1,3 +1,4 @@
+from functools import wraps
 from http import HTTPStatus
 
 from flask import abort, request
@@ -6,6 +7,7 @@ from app.users.models import Token
 
 
 def login(view):
+    @wraps(view)
     def authenticate(*args, **kwargs):
         if 'Authorization' not in request.headers:
             abort(HTTPStatus.UNAUTHORIZED)

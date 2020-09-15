@@ -1,8 +1,10 @@
 from http import HTTPStatus
 
 from flask import Blueprint, request, jsonify
+from sqlalchemy import desc
 
-from app.users.models import User
+from app.core import auth
+from app.users.models import User, Token
 from app.users.schemas import UserSchema, AuthenticateUserSchema
 
 users_api = Blueprint('users_api', __name__)
@@ -20,12 +22,14 @@ def register():
 
     load_data = schema.load(data)
     user_obj = schema.create(load_data)
-    return jsonify(schema.dump(user_obj)), HTTPStatus.CREATED
+    token = user_obj.tokens.order_by(desc(Token.created_at)).first()
+    return jsonify(AuthenticateUserSchema().dump(token)), HTTPStatus.CREATED
 
 
 @users_api.route('/', methods=["GET"])
 @users_api.route('/<int:user_id>/', methods=["GET"])
-def retrieve_users(user_id=None):
+@auth.login
+def retrieve_users(auth_user, user_id=None):
     if user_id:
         user = User.query.filter_by(id=user_id).first_or_404()
         return jsonify(UserSchema().dump(user)), HTTPStatus.OK
@@ -43,5 +47,6 @@ def authenticate_user():
     if validation_errors:
         return jsonify(validation_errors), HTTPStatus.UNAUTHORIZED
 
-    user = User.query.filter_by(email=data.get('email')).one()
-    return jsonify(UserSchema().dump(user)), HTTPStatus.OK
+    user_obj = User.query.filter_by(email=data.get('email')).one()
+    token_obj = user_obj.tokens.order_by(desc(Token.created_at)).first()
+    return jsonify(auth_schema.dump(token_obj)), HTTPStatus.OK

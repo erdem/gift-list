@@ -11,19 +11,12 @@ class UserSchema(Schema):
     password = fields.String(required=True, load_only=True)
     first_name = fields.String(required=True)
     last_name = fields.String(required=False)
-    token = fields.Method('get_user_token', dump_only=True)
     created_at = fields.DateTime(dump_only=True)
 
     @validates('email')
     def validate_email(self, email, **kwargs):
         if bool(User.query.filter_by(email=email).first()):
             raise ValidationError(f'"{email}" email address already exists.')
-
-    def get_user_token(self, user):
-        try:
-            return user.tokens[0].key
-        except IndexError:
-            return None
 
     @classmethod
     def create(cls, data, **kwargs):
@@ -38,8 +31,9 @@ class UserSchema(Schema):
 
 
 class AuthenticateUserSchema(Schema):
-    email = fields.Email(required=True)
+    email = fields.Email(required=True, load_only=True)
     password = fields.String(required=True, load_only=True)
+    key = fields.String(dump_only=True)
 
     @validates_schema()
     def validate_password(self, data, **kwargs):

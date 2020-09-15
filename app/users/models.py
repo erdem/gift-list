@@ -15,6 +15,7 @@ class User(db.Model):
     tokens = db.relationship(
         'Token',
         back_populates='user',
+        lazy='dynamic',
         cascade='all, delete-orphan'
     )
 

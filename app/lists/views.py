@@ -40,7 +40,7 @@ def retrieve_lists(auth_user, list_id=None):
     return jsonify(ListSchema(many=True).dump(lists)), HTTPStatus.OK
 
 
-@lists_api.route('/<int:list_id>/list-items/', methods=['GET'])
+@lists_api.route('/<int:list_id>/list-items/', methods=['POST'])
 @auth.login
 def create_list_items(auth_user, list_id=None):
     data = request.get_json()

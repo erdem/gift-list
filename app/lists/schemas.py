@@ -36,12 +36,11 @@ class ListItemSchema(Schema):
     is_purchased = fields.String(dump_only=True)
     purchased_item = fields.Nested(
         lambda: PurchasedListItemSchema(
-            only=('id', 'created_at')
+            only=('id', 'purchased_by', 'created_at')
         ),
         many=False,
         dump_only=True
     )
-    purchased_by = fields.Nested(UserSchema, many=False, required=True)
     created_at = fields.DateTime(dump_only=True)
 
     class Meta:

@@ -12,7 +12,7 @@ products_api = Blueprint('products_api', __name__)
 
 @products_api.route('/', methods=['POST'])
 @auth.login
-def create_products():
+def create_products(auth_user):
     data = request.get_json()
     schema = ProductSchema()
 
@@ -28,7 +28,7 @@ def create_products():
 @products_api.route('/', methods=['GET'])
 @products_api.route('/<int:product_id>/', methods=['GET'])
 @auth.login
-def retrieve_products(product_id=None):
+def retrieve_products(auth_user, product_id=None):
     if product_id:
         product = Product.query.filter_by(id=product_id).first_or_404()
         return jsonify(ProductSchema().dump(product)), HTTPStatus.OK

@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validates, ValidationError, post_load, validates_schema
+from marshmallow import Schema, fields, validates, ValidationError, validates_schema
 
 from app.database import db
 from app.users.models import User, Token

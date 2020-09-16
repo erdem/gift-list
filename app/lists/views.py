@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify
 from flask import request
 
 from app.core import auth
-from app.lists.models import List, ListItem
+from app.lists.models import List
 from app.lists.schemas import ListSchema, ListItemSchema, PurchasedListItemSchema
 from app.products.models import Product
 

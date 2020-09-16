@@ -26,7 +26,7 @@ Setup
 API ENDPOINTS
 -------------
 
-- User Registration endpoint. 
+- ### User Registration endpoint. 
 
 *Allowed Method*: POST
 
@@ -75,7 +75,7 @@ Response:
 ```
 
 
-- User Authentication endpoint. 
+- ### User Authentication endpoint. 
 
 *Allowed Method*: POST
 
@@ -115,7 +115,7 @@ Response:
 ```
 
 
-- User list endpoint. 
+- ### User list endpoint. 
 
 *Allowed Method*: GET
 
@@ -146,7 +146,7 @@ Response:
 ]
 ```
 
-- Create and list product endpoints. 
+- ### Create and list product endpoints. 
 
 *Allowed Method*: GET, POST
 
@@ -217,7 +217,7 @@ curl -X GET \
 ]
 ```
 
-- Create and Retrieve List endpoint. 
+- ### Create and Retrieve List endpoints. 
 
 *Allowed Method*: GET, POST
 
@@ -260,7 +260,7 @@ Response:
 }
 ```
 
-- Create list item endpoint. 
+- ### Create list item endpoint. 
 
 *Allowed Method*: POST
 
@@ -320,9 +320,9 @@ Response:
 ```
 
 
-- Purchased endpoint for list items. (`/api/lists/1/list-items/1/purchased/`)
+- ### Purchased endpoint for list items. 
 
- 
+
 *Allowed Method*: POST
 
 *Endpoint*: `/api/lists/1/list-items/2/purchased/`
